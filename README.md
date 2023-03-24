@@ -8,13 +8,13 @@ The "5G-NR RRC Connection Setup" sequence describes the steps involved in settin
 
 The sequence diagrams have been generated using [EventStudio System Designer](https://www.eventhelix.com/EventStudio/). You will need to install the EventStudio extension for Visual Studio Code to view the diagrams. The extension can be downloaded from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=EventHelix.EventStudio).
 
-The sequence diagram is generated from the [5G Standalone Registration FDL file](model/5g-standalone-access-registration.FDL5g-standalone-access-registration.FDL).
+The sequence diagram is generated from the [5G Standalone Registration FDL file](model/5g-standalone-access-registration.FDL).
 
 ## Message Details
 
 When you click on a message in the sequence diagram, you see details about the message.
 
-The message details are generated from the [5G Standalone Registration Markdown file](message-details/5g-standalone-access-registration.md5g-standalone-access-registration.md)
+The message details are generated from the [5G Standalone Registration Markdown file](message-details/5g-standalone-access-registration.md)
 
 
 
