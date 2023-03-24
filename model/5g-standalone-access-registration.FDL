@@ -1,0 +1,442 @@
+/* Optional style and theme specification files to style the output. Choose from predefined files:
+aqua.FDL, business.FDL, chocolate.FDL, pastel.FDL, rainbow.FDL or sunrise.FDL.*/
+//#include <aqua.FDL>
+#define HYPERLINK https://www.eventhelix.com/5G/standalone-access-registration/details/5g-standalone-access-registration.html
+/* Project include file - Use include files to share common aspects of the model across multiple FDL files. */ 
+#include <inc.FDL>
+component: [_user] "User Equipment", [_radio] "5G NodeB", [_core] "5GC"
+#ifndef EXCLUDE_UE_SEPARATORS
+eternal: separator in "User Equipment"
+#endif
+eternal: [_user] UE in "User Equipment"
+#ifndef EXCLUDE_UE_SEPARATORS
+eternal: separator in "User Equipment"
+#endif 
+
+#ifndef EXCLUDE_GNB_SEPARATORS
+eternal: [_radio] separator in "5G NodeB"
+#endif
+eternal: [_radio] "gNB" in "5G NodeB"
+#ifndef EXCLUDE_GNB_SEPARATORS
+eternal: [_radio] separator in "5G NodeB"
+#endif
+eternal: [_core] "New AMF":AMF in "5GC"
+eternal: [_core] "Old AMF":AMF in "5GC"
+eternal: [_core] SMF in "5GC"
+eternal: [_core] UPF in "5GC"
+eternal: [_core] PCF in "5GC"
+eternal: [_core] AUSF in "5GC"
+dynamic: [_core] UDM | "5G-EIR" in "5GC"
+{MyTheme} feature "5G Standalone Registration" {
+
+#ifdef ALL
+  [_title] |= 5G Standalone Access: Registration Procedure =|
+#endif
+
+#ifdef UE_ONLY
+  [_title] |=  UE Interactions: 5G Standalone Access Registration =|
+#endif
+
+#ifdef GNB_ONLY
+  [_title] |= gNB Interactions: 5G Standalone Access Registration =|
+#endif
+
+#ifdef AMF_ONLY
+  [_title] |= AMF Interactions: 5G Standalone Access Registration =|
+#endif
+
+#ifdef PCF_ONLY
+  [_title] |= PCF Interactions: 5G Standalone Access Registration =|
+#endif
+
+#ifdef AUSF_ONLY
+  [_title] |= AUSF Interactions: 5G Standalone Access Registration =|
+#endif
+
+#ifdef UDM_ONLY
+  [_title] |= UDM Interactions: 5G Standalone Access Registration =|
+#endif
+
+#ifdef SMF_ONLY
+  [_title] |= SMF Interactions: 5G Standalone Access Registration =|
+#endif
+
+#ifdef UPF_ONLY
+  [_title] |= UPF Interactions: 5G Standalone Access Registration =|
+#endif
+
+#ifdef ALL
+[_subtitle] |= Click on individual messages names and actions boxes for a detailed description. =| 
+#endif
+preconditions {
+  [_state] UE state = "RRC_IDLE" % The UE is in RRC idle state
+  "Old AMF" action "UE Context" % The UE context already exists at the Old AMF.
+}
+
+sequence "5G-NR RRC Connection Setup" {
+  "Msg1: Preamble" ("Zadoff-Chu sequence"): UE -> "gNB" <HYPERLINK#preamble>
+  |* The UE picks a random preamble. The preamble is referenced with the Random Access Preamble Id (RAPID). 
+  The preamble transmission is a Zadoff-Chu sequence.*|
+
+  UE starts T300
+  % Start T300 to await the RRC Setup message from the network.
+
+  UE action "Start decoding the PDCCH for the RA-RNTI" <HYPERLINK#ra-rnti>
+  |* In response to a PRACH transmission, a UE attempts to detect a DCI Format 1_0 with CRC scrambled by a 
+  the RA-RNTI corresponding to the RACH transmission. The UE looks for message during a configured window 
+  of length ra-ResponseWindow. *|
+
+  "gNB" action "Allocate Temporary C-RNTI"
+  % The Temporary C-RNTI assignment will be signaled to the UE in the Random Access Response message.
+
+  "PDCCH DCI Format 1_0 [RA-RNTI]" ("Frequency domain resource assignment",
+  "Time domain resource assignment", 
+  "Downlink MCS") : "gNB" -> UE <HYPERLINK#pdcch-dci-format-10>
+  |* The RA-RNTI scrambled DCI message signals the frequency and time resources assigned for the transmission of the Transport Block containing
+  the Random Access Response message. *|
+
+  "Msg2: Random Access Response" ("Timing Advance Command",
+                          "UL Grant" = "{ Frequency hopping flag, Msg3 PUSCH frequency+time resource allocation, Uplink MCS, TPC command, CSI request}",
+                          "Temporary C-RNTI"): "gNB" -> UE <HYPERLINK#random-access-response>
+  |* The UE detects a DCI Format 1_0 with CRC scrambled by the corresponding RA-RNTI and receives a transport block in a corresponding PDSCH. 
+  The RAR carries the timing advance, uplink grant and the Temporary C-RNTI assignment. *|
+
+  UE action "ue-identity = Random number between 0 and 2^39-1"
+  |* UE picks a random identity that will be used during contention resolution. *|
+
+  UE action "Extract UL Grant from the RAR" <HYPERLINK#rar-ul-grant>
+  |* The uplink allocation contained in the RAR will be used to transmit Msg3 (RRC Setup Request). *|
+
+  "Msg3: RRCSetupRequest" ("ue-Identity", establishmentCause): UE -> "gNB" <HYPERLINK#rrcsetuprequest>
+  |* The RRC Setup Request is sent with the random ue-Identity and an establishment cause.*|
+
+  "PDCCH DCI Format 1_0 [C-RNTI]" ("Frequency domain resource assignment",
+  "Time domain resource assignment", 
+  "Downlink MCS") : "gNB" -> UE <HYPERLINK#pdcch-dci-format-10>
+  |* The C-RNTI scrambled DCI message signals the frequency and time resources assigned for the transmission of the Transport Block containing
+  the RRC Setup message. *|
+
+  "gNB" action "Setup SRB1"
+  % Signaling Radio Bearer 1 is configured.
+
+  "Msg4: RRCSetup" ("radioBearerConfig {srb-ToAddModList}" , "masterCellGroup {cellGroupId, rlc-BearerToAddModList, mac-CellGroupConfig, physicalCellGroupConfig}"): UE <- "gNB" <HYPERLINK#rrcsetup>
+  |* The RRC Setup message is sent to setup SRB1 and the master cell. The message carries the radioBearerConfig and masterCellGroup information elements. *|
+
+  UE stops T300
+  % The UE stops T300 as it has received the RRC Setup message.
+
+  [_state] UE state = "RRC_CONNECTED"
+
+  UE action "Perform the cell group configuration procedure"  <HYPERLINK#cellgroupconfig>
+  UE action "Perform the radio bearer configuration procedure" <HYPERLINK#radiobearerconfig>
+
+  "PDCCH DCI Format 0_0 [C-RNTI]"("Frequency domain resource assignment",
+  "Time domain resource assignment", 
+  "Uplink MCS"): "gNB" -> UE <HYPERLINK#pdcch-dci-format-00>
+  % The gNB assigns uplink resource to the UE so that it can send the RRC Setup Complete message.
+
+  UE action "Prepare the Registration Request NAS message" <HYPERLINK#registration-request>
+
+  "RRCSetupComplete" +
+  "[dedicatedNAS-Message: Registration Request]" ("NAS Registration Request"="{Registration type, 5G-GUTI, Last TAI, Requested NSSAI, UE Capability, List of PDU Sessions}"): UE -> "gNB" <HYPERLINK#rrcsetupcomplete>
+  |* The UE sends the RRC Setup Complete message with a "Registration Request" in the dedicatedNAS-Message field. *|
+}
+
+"gNB" action "AMF Selection"
+% The gNB selects the Access and Mobility Function (AMF) for this session.
+
+"gNB" allocates "RAN UE NGAP ID"
+|* The gNB allocates a "RAN UE NGAP ID". The AMF will use this id to address the UE context on the gNB. *|
+
+"NGAP Initial UE Message"
++ "[NAS-PDU: Registration Request]" ("RAN UE NGAP ID", 
+                                     "NAS Registration Request"="{Registration type, 5G-GUTI, Last TAI, Requested NSSAI, UE Capability, List of PDU Sessions}",
+                                     "User Location Information",
+                                     "RRC Establishment Cause",
+                                     "5G-S-TMSI",
+                                     "AMF Set ID"): "gNB" -> "New AMF" <HYPERLINK#initial-ue-message>
+|* The gNB sends the Initial UE Message to the selected AMF. The message carries the "Registration Request" 
+message that was received from the UE in the RRC Setup Complete message. The "RAN UE NGAP ID" and the 
+"RRC Establishment Cause" are also included in the message. *|
+
+/* Namf 29.518, 23.502*/
+sequence "Obtain the UE Context from the Old AMF" {
+  "Namf_Communication_UEContextTransfer Request" ("NAS Registration Request"): "New AMF" -> "Old AMF" <HYPERLINK#namfcommunicationuecontexttransfer-request>
+  |* Since the 5G-GUTI was included in the Registration Request and the serving AMF has changed since last Registration procedure, 
+  the new AMF requests context transfer from the old AMF. The complete NAS registration message received from the UE is included
+  in the context request. *|
+
+  "Old AMF" action "Integrity check the 'NAS Registration Request' contained in the UE context transfer request"
+  % The AMF performs an integrity check on the Registration Request to guard against malicious attacks.
+
+  "Namf_Communication_UEContextTransfer Response" ("UE Context in AMF" = "{SUPI, 5G-GUTI, PEI, UE Radio Capability, Registration Area, ...}"): "New AMF" <- "Old AMF"  <HYPERLINK#namfcommunicationuecontexttransfer-response>
+  % The Old AMF passes the AMF UE Context to the new AMF.
+
+  "New AMF" action "Save the UE Context" <HYPERLINK#ue-context-in-amf>
+  % The AMF saves the UE context that was obtained from the Old AMF.
+}
+
+"NAS Identity Request" ("Security header type", "Identity request message identity","Identity type"): UE <- "gNB" <- "New AMF" <HYPERLINK#identity-request>
+% The New AMF requests UE Identity (SUCI) from the UE via a NAS message.
+
+UE action "Derive SUCI from the Home PLMN public key" <HYPERLINK#identity-response>
+
+"NAS Identity Response"("Security header type", "Identity response message identity","Mobile identity"): UE -> "gNB" -> "New AMF" <HYPERLINK#identity-response>
+% The UE responds to the Identity Request.
+
+"New AMF" action "AUSF Selection"
+% Authentication is needed for the UE. The AMF selects "Authentication Server Function" based on the SUCI.
+
+sequence "NAS Authentication and Security" {
+  /* Nausf/Nudm 33.501*/
+  /* Nudm 29.503 */
+  "Nausf_UEAuthenticate_authenticate Request"("SUCI: Subscription Concealed Identifier") : "New AMF" -> AUSF <HYPERLINK#nausfueauthenticateauthenticate-request>
+  % The AMF requests UE authentication vectors and algorithm information from the AUSF - Authentication Server Function 
+
+  create UDM
+  "Nudm_UEAuthenticate_Get Request" ("SUCI: Subscription Concealed Identifier"): AUSF -> UDM <HYPERLINK#nudmueauthenticateget-request>
+  % Request authentication vectors from the UDM - Unified Data Management function.
+
+  UDM action "Authentication Vector Generation"
+  % UDM generates the authentication vectors for the session.
+
+  "Nudm_UEAuthenticate_Get Response"("Authentication method and data"): AUSF <- UDM <HYPERLINK#nausfueauthenticateauthenticate-response>
+  % UDM returns authentication data.
+  delete UDM
+
+  "Nausf_UEAuthentication_authenticate Response"("Authentication result", SUPI): "New AMF" <- AUSF <HYPERLINK#nausfueauthenticateauthenticate-response>
+  |* The response returns the master key which is used by AMF to derive NAS security keys and other security key(s). The SUPI 
+  is also returned to the AMF. *|
+
+  "NAS Authentication Request" (ngKSI, RAND, AUTN, ABBA ): UE <- "gNB" <- "New AMF" <HYPERLINK#authentication-request>
+  % Initiate the authentication procedure with the UE. Send the key selector, RAND and AUTN to the UE.
+
+  "NAS Authentication Response" ("Authentication response parameter"): UE -> "gNB" -> "New AMF" <HYPERLINK#authentication-response>
+  % The UE responds to the authentication challenge.
+
+  "NAS Security Mode Command" ("Selected NAS security algorithms",
+      "Replayed UE security capabilities", "IMEISV request", ngKSI, 
+      "Additional 5G security information" ): UE <- "gNB" <- "New AMF" <HYPERLINK#nas-security-mode-command>
+  |* The AMF signals the selected NAS security algorithm to the UE. The AMF also requests the IMEISV from the UE. *|  
+
+  "NAS Security Mode Complete" ("NAS message container", IMEISV): UE -> "gNB" -> "New AMF" <HYPERLINK#nas-security-mode-complete>
+  |* The UE signals the completion of the NAS security procedure. The message contains the IMEISV.*|
+}
+"Namf_Communication_RegistrationComplete_Notify": "New AMF" -> "Old AMF" <HYPERLINK#namfcommunicationregistrationcompletenotify>
+|* Since the AMF has changed the new AMF notifies the old AMF that the 
+registration of the UE in the new AMF is completed.*|
+
+sequence "Confirm that the UE is not blacklisted" {
+  create "5G-EIR"
+  "New AMF" action "Obtain the PEI from the UE Context" <HYPERLINK#ue-context-in-amf>
+  % The PEI will be used to perform the equipment check.
+  "N5g-eir_EquipmentIdentityCheck Request" (PEI, SUPI): "New AMF" -> "5G-EIR" <HYPERLINK#n5g-eirequipmentidentitycheck-request>
+  |* Invoke the Equipment Identity Check service. This service is provided by the 5G-EIR to check the 
+  PEI and determine whether the PEI is blacklisted.*|
+
+  "N5g-eir_EquipmentIdentityCheck Response" ("PEI checking result") : "New AMF" <- "5G-EIR" <HYPERLINK#n5g-eirequipmentidentitycheck-response>
+  % The 5G-EIR reports that the Mobile (identified by the PEI) has not been black listed.
+  delete "5G-EIR"
+}
+
+sequence "Register with the UDM and obtain the subscription data" {
+  "New AMF" action "UDM Selection"
+  % Select the Unified Data Management service entity.
+
+  create UDM
+  "Nudm_UEContextManagement_Registration Request"(PUT, "Amf 3Gpp Access Registration" = "{ AMF Instance Id, Supported Features, PEI, dereg Callback Uri, ...}"): "New AMF" -> UDM <HYPERLINK#nudmuecontextmanagementregistration-request>
+  |* Since the AMF has changed, the New AMF registers with the UDM. *|
+
+  "Nudm_UEContextManagement_Registration Response " ("204 No Content"): "New AMF" <- UDM <HYPERLINK#nudmuecontextmanagementregistration-response>
+  |* A response code of "204 No Content" signals registration success. *|
+
+  "Nudm_SubscriberDataManagement_Get Request" (GET, "Requested data"= "Access and Mobility Subscription data"): "New AMF" -> UDM <HYPERLINK#nudmsubscriberdatamanagementget-request>
+  |* The AMF retrieves the Access and Mobility Subscription data. *|
+
+  "Nudm_SubscriberDataManagement_Get Response" ("Access and Mobility Subscription data" = "{Supported Features, GPSI array, Network Slice Selection Info, ...}"): "New AMF" <- UDM <HYPERLINK#nudmsubscriberdatamanagementget-response>
+  % UDM responds with the requested data.
+
+  "Nudm_SubscriberDataManagement_Get Request" (GET, "Requested data"= "SMF Selection Subscription data"): "New AMF" -> UDM <HYPERLINK#nudmsubscriberdatamanagementget-request>
+  |* The AMF retrieves the SMF Selection Subscription data. *|
+
+  "Nudm_SubscriberDataManagement_Get Response" ("SMF Selection Subscription data" = "{Supported Features, List of S-NSSAIs and associated information}"): "New AMF" <- UDM <HYPERLINK#nudmsubscriberdatamanagementget-response>
+  % UDM responds with the requested data.
+
+  "Nudm_SubscriberDataManagement_Get Request" (GET, "Requested data"= "UE context in SMF data"): "New AMF" -> UDM <HYPERLINK#nudmsubscriberdatamanagementget-request>
+  |* The AMF retrieves the UE context in SMF data. *|
+
+  "Nudm_SubscriberDataManagement_Get Response" ("UE context in SMF data" = "{PDU Session Information, FQDNs for EPC Interworking}"): "New AMF" <- UDM <HYPERLINK#nudmsubscriberdatamanagementget-response>
+  % UDM responds with the requested data.
+
+  
+  "New AMF" action "Create UE Context"
+  % Create the AMF UE context for the user.
+
+  "Nudm_UEContextManagement_Deregistration_Notify": "Old AMF" <- UDM <HYPERLINK#nudmuecontextmanagementderegistrationnotify>
+  |* The old AMF is notified that it is no longer serving the user. The UDM sends a POST request to the callbackReference (deregCallbackUri field in Amf3GppAccessRegistration) as provided by the Old AMF during the registration. *|
+  
+
+  delete UDM
+
+
+  Nsmf_PDUSession_ReleaseSMContext (SUPI, "PDU Session ID"): "Old AMF" -> SMF <HYPERLINK#nsmfpdusessionreleasesmcontext>
+  |* The Old AMF the SMF that it is no longer associated with the specified PDU Session. *|
+    "Old AMF" action "Delete UE context"
+  % Remove the AMF context.
+}
+
+sequence "Update policy association with the PCF. The PCF registers for AMF events." {
+  "New AMF" action "PCF Selection"
+  % Select the Policy and Charging Function service entity.
+
+  /* PCF 29.513 Npcf: 29.507, 29.514*/
+  "Npcf_AMPolicyControl_Create Request": "New AMF" -> PCF <HYPERLINK#npcfampolicycontrolcreate-request>
+  |* The AMF contacts the PCF to create a policy association and retrieve the 
+  UE policy and/or Access and Mobility control policy. *|
+
+  "Npcf_AMPolicyControl_Create Response" ("Policy Association Request" = "{ SUPI, GPSI, PEI, User Location, ...}"): "New AMF" <- PCF <HYPERLINK#npcfampolicycontrolcreate-response>
+  |* The PCF responds with the policy association information. *|
+
+  "Namf_EventExpose_Subscribe Request": PCF -> "New AMF" <HYPERLINK#namfeventexposesubscribe-request>
+  |* The PCF registers for events like "Location Report", "Registration State Report" and "Communication Failure Report".  *|
+
+  "Namf_EventExpose_Subscribe Response" ("201 Created", "Amf Created Event Subscription"): PCF <- "New AMF" <HYPERLINK#namfeventexposesubscribe-response>
+  |* The AMF responds with "201 Created" to signal successful subscription. *|
+
+  "Npcf_AMPolicyControl_Delete": "Old AMF" -> PCF <HYPERLINK#npcfampolicycontroldelete-request>
+  |* The Old AMF requests that the policy association is deleted as the corresponding UE context is terminated.*|
+
+  "Npcf_AMPolicyControl_Delete Response" ("204 No Content"): "Old AMF" <- PCF <HYPERLINK#npcfampolicycontroldelete-response>
+  % PCF signals the successful delete with the "204 No Content" HTTP response code.
+}
+
+sequence "Setup the User Plane Function (UPF)" {
+  "Nsmf_PDUSession_UpdateSMContext Request" ("PDU Sessions", "Operation Type"= "UP activate" ): "New AMF" -> SMF <HYPERLINK#nsmfpdusessionupdatesmcontext-request>
+  |* Since "List Of PDU Sessions To Be Activated" was included in the Registration Request, the New AMF initiates PDU Session reactivation. The Session Management Function 
+  (SMF) is requested to setup a new session. *|
+
+  SMF allocates "UE IP Address" % Assign a UE address for the PDU session
+  SMF allocates "PDU Session Uplink TEID" % Allocate a TEID that the gNB should use when sending uplink GTP PDUs to the UPF.
+
+  SMF action "Select UPF" % Select a user data plane for the user
+
+  "PFCP Session Modification Request"("Session Endpoint Identifier", "PDU Session Uplink TEID") : SMF-N4 -> UPF-N4 <HYPERLINK#pfcp-session-modification-request>
+  |* The Packet Forwarding Control Protocol (PFCP) is used between the SMF control plane and the UPF data plane.
+  The Session Modification is signaled to the data plane. *|
+
+  "Downlink Data" : env_r => UPF
+  % UPF has started receiving data destined to the UE.
+
+  UPF begins action "Buffer Downlink Data"
+  |* The UPF needs to buffer the data as the PDU session has not been established at the gNB and the UE. *|
+
+  "PFCP Session Modification Response" ( "Session Endpoint Identifier") : SMF-N4 <- UPF-N4 <HYPERLINK#pfcp-session-modification-response>
+  % The UPF data plane responds back to the SMF control plane after the session modification has been completed.
+
+  "Nsmf_PDUSession_UpdateSMContext Response" : "New AMF" <- SMF <HYPERLINK#nsmfpdusessionupdatesmcontext-response>
+  % The SMF informs the AMF that the Session Management context has been updated.
+}
+"New AMF" allocates "AMF UE NGAP ID"
+|* The AMF allocates an "AMF UE NGAP ID". The gNB will use this id to address the UE context on the AMF. *|
+
+"Initial Context Setup Request" + 
+   "[NAS-PDU: Registration Accept]" ("AMF UE NGAP ID",
+                                    "RAN UE NGAP ID",
+                                    "UE Aggregate Maximum Bit Rate",
+                                    "GUAMI",
+                                    "PDU Session Resource Setup Request List",
+                                    "- PDU Session ID",
+                                    "- PDU Session Uplink TEID",
+                                    "- UE IP Address",
+                                    "- NAS-PDU",
+                                    "- S-NSSAI",
+                                    "- PDU Session Resource Setup Request Transfer", 
+                                    "Allowed NSSAI",
+                                    "UE Security Capabilities",
+                                    "Security Key"): "gNB" <- "New AMF" <HYPERLINK#initial-context-setup-request>
+|* The AMF initiates a session setup with the gNB. The message typically contains the Registration Accept NAS
+message. The message carries one or more PDU Session setup requests. Each PDU session is addressed with the
+"PDU Session ID". The message also carries the uplink TEID for every PDU session. *|
+
+|* The message also carries the "AMF UE NGAP ID", "UE Aggregate Maximum Bit Rate", UE security capabilities
+and security key. *|
+sequence "5G-NR AS Security Procedure" {
+  [_RRC] SecurityModeCommand ("securityConfigSMC {securityAlgorithmConfig}" ): "gNB" -> UE <HYPERLINK#securitymodecommand>
+
+  UE action "Derive the K-gNB key"
+  |* K-gNB is a key derived by UE and AMF from K-AMF.*|
+  UE action "Derive K-RRC-int key associated with the Integrity Protection Algorithm"
+  UE action "Verify the integrity protection of the Security Mode Command message"
+  UE action "Derive K-UP-int key associated with the Integrity Protection Algorithm"
+  UE action "Start SRB Integrity Protect"
+  |* Configure lower layers to apply SRB integrity protection using the indicated algorithm and the K-RRC-int key immediately. *|
+
+
+  [_RRC] SecurityModeComplete : "gNB" <- UE <HYPERLINK#securitymodecomplete>
+  |* The security mode complete message confirms the successful completion of the security mode command. This message is integrity
+  protected but not ciphered. Ciphering will start immediately after sending this message. *|
+
+  UE action "Start SRB Ciphering"
+  |* Configure lower layers to apply SRB ciphering using the indicated algorithm, the K-RRC-enc key after completing the procedure. The Security Mode Complete
+  message is not ciphered. *|
+}
+sequence "5G-NR RRC Reconfiguration" {
+  RRCReconfiguration + 
+  "[Registration Accept" + 
+  "(5GS registration result, " +
+  "PDU session status)]"(masterCellGroup, secondaryCellGroup, "radioBearerConfig (drb-ToAddModList)", "MeasConfig (Measurement Config)") : "gNB" -> UE <HYPERLINK#rrcreconfiguration>
+
+  |* The RRC Reconfiguration message is sent to the UE for setting up radio bearers, setup a secondary cell and initiate UE measurements. *|
+
+  UE action "Perform the primary cell group configuration procedure" <HYPERLINK#cellgroupconfig>
+  UE action "Perform the secondary cell group configuration procedure" <HYPERLINK#cellgroupconfig>
+  UE action "Perform the radio bearer configuration procedure" <HYPERLINK#radiobearerconfig>
+  UE action "Initiate measurements based on the received MeasConfig" <HYPERLINK#measconfig>
+  UE action "Process the Registration Accept NAS message and setup PDU sessions" <HYPERLINK#registration-accept>
+
+  RRCReconfigurationComplete ("uplinkTxDirectCurrentList [ {servCellIndex, uplinkDirectCurrentBWP}]") : "gNB" <- UE <HYPERLINK#rrcreconfigurationcomplete>
+  |* Confirm the successful completion of an RRC connection reconfiguration. *|
+}
+"gNB" allocates "PDU Session Downlink TEID"
+% Allocate the TEID that the UPF will use to send downlink data to the gNB.
+
+"Initial Context Setup Response" ("PDU Session Downlink TEID"): "gNB" -> "New AMF"  <HYPERLINK#initial-context-setup-response>
+% The gNB signals the successful setup of PDU sessions. The message also carries the Downlink TEID that should be used (specified per PDU session).
+
+"NAS Registration Complete" : UE -> "gNB" -> "New AMF" <HYPERLINK#registration-complete>
+|* The UE signals the completion of the registration via the "Registration Complete" message to the AMF. *|
+
+sequence "Start Downlink and Uplink Data Transfer" {
+  "Uplink Data" : UE => "gNB" => UPF-UTEID 
+  % Since the uplink path has been setup completely, the UE starts sending data. The gNB sends the UE data to the Uplink TEID.
+
+  "Uplink Data" : UPF => env_r
+  % The UPF starts sending the data to the Internet.
+
+  "Nsmf_PDUSession_UpdateSMContext Request" ("Session Management Downlink TEID"): "New AMF" -> SMF <HYPERLINK#nsmfpdusessionupdatesmcontext-request>
+  |* The AMF modifies the Session Management Context based on the updates from the gNB. The Downlink TEIDs for all the PDU sessions will be passed 
+  to the SMF. *|
+
+  "PFCP Session Modification Request" ("Session Endpoint Identifier", "Session Management Downlink TEID"): SMF-N4 -> UPF-N4 <HYPERLINK#pfcp-session-modification-request>
+  % The SMF control plane signals session updates to the UPF data plane.
+
+  UPF ends action "Buffer Downlink Data"
+  % UPF can stop the data buffering as a downlink path has been setup.
+
+  "Downlink Data" : UPF => "gNB"-DTEID => UE
+  % The UPF sends the buffered data to the gNB using the Downlink TEID for the PDU session. All new downlink data also takes the same path.
+
+  "PFCP Session Modification Response" ("Session Endpoint Identifier") : SMF-N4 <- UPF-N4 <HYPERLINK#pfcp-session-modification-response>
+  % The UPF data plane responds back to SMF control plane.
+
+  "Nsmf_PDUSession_UpdateSMContext Response": "New AMF" <- SMF <HYPERLINK#nsmfpdusessionupdatesmcontext-response>
+  % The SMF notifies the AMF that session management context update is complete.
+}
+#ifdef ALL
+[_subtitle] |= EXPLORE MORE
+
+5G https://www.eventhelix.com/5G/
+
+LTE https://www.eventhelix.com/lte/ =|
+#endif
+}

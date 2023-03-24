@@ -1,0 +1,6 @@
+*.emf
+*.csv
+*.pdf
+*.html
+.DS_Store
+*.png

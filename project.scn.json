@@ -1,0 +1,127 @@
+{
+  /* Specify the scenarios to be included in the project
+  A scenario is defined with with:
+  
+  "modelPath"                      FDL file that defines the model.
+  "scenarioName"                   A title that summarizes the scenario
+  "defines"                        Preprocessor defines that select the
+                                   flow specific to this scenario.*/
+  "scenarios": [
+    {
+      "modelPath": "model/5g-standalone-access-registration.FDL",
+      "scenarioName": "5G Standalone Access Registration"
+    }
+  ],
+  /* Specify the documents to be generated from this project.
+  "documentFormat"                 Choose between "pdf" and "emf" (MS Word Picture format)
+                                   Note: documentFormat defaults to "pdf" when omitted for a document.
+  "documentName"                   Defines the file name for the document
+  "documentType"                   Choose between "sequence-diagram" and "context-diagram"
+                                   Note: documentType defaults to "sequence-diagram" when omitted.
+  "interactionLevel"               Specify this option to define a high level sequence 
+                                   diagram at "system", "subsystem", "module" or "component" level.
+  "interfaceFilter"                Specify this option to limit the sequence diagram to interactions
+                                   involving a specified object, component, module, subsystem, system or
+                                   their respective type specifications.
+  "defines"                        Specify the preprocessor defines that are specific for this document.
+                                   For example, "POSTER" and "PRESENTATION" formats can be selected
+                                   by adding them to the defines.*/
+  "documents": [
+/*     {
+      "documentName": "en-dc-secondary-node-addition-overview",
+      "interactionLevel": "component",
+      "exclude": [
+        "remarks", "parameters", "actions", "blockRemarks"
+      ],
+      "defines": [
+        "EXCLUDE_4G_ATTACH",
+        "EXCLUDE_CORE_NETWORK_INTERNALS"
+      ]
+    },
+    {
+      "documentName": "en-dc-secondary-node-addition",
+      "defines": [
+        "EXCLUDE_CORE_NETWORK_INTERNALS"
+      ]
+    }, */
+    {
+      "documentName": "5g-standalone-access-registration",
+      "defines": [
+        "ALL"
+      ]
+    },
+    {
+      "documentName": "UE",
+      "interfaceFilter": "UE",
+      "defines" : [
+        "UE_ONLY"
+      ]
+    },
+    {
+      "documentName": "gNB",
+      "interfaceFilter": "gNB",
+      "defines" : [
+        "GNB_ONLY"
+      ]
+    },
+    {
+      "documentName": "AMF",
+      "interfaceFilter": "AMF",
+      "defines": [
+        "AMF_ONLY",
+        "EXCLUDE_UE_SEPARATORS",
+        "EXCLUDE_GNB_SEPARATORS"
+      ]
+    },
+    {
+      "documentName": "PCF",
+      "interfaceFilter": "PCF",
+      "defines": [
+        "EXCLUDE_UE_SEPARATORS",
+        "EXCLUDE_GNB_SEPARATORS",
+        "PCF_ONLY"
+      ]
+    },
+    {
+      "documentName": "AUSF",
+      "interfaceFilter": "AUSF",
+      "defines": [
+        "EXCLUDE_UE_SEPARATORS",
+        "EXCLUDE_GNB_SEPARATORS",
+        "AUSF_ONLY"
+      ]
+    },
+    {
+      "documentName": "UDM",
+      "interfaceFilter": "UDM",
+      "defines": [
+        "EXCLUDE_UE_SEPARATORS",
+        "EXCLUDE_GNB_SEPARATORS",
+        "UDM_ONLY"
+      ]
+    },
+    {
+      "documentName": "SMF",
+      "interfaceFilter": "SMF",
+      "defines": [
+        "EXCLUDE_UE_SEPARATORS",
+        "EXCLUDE_GNB_SEPARATORS",
+        "SMF_ONLY"
+      ]
+    },
+    {
+      "documentName": "UPF",
+      "interfaceFilter": "UPF",
+      "defines": [
+        "EXCLUDE_UE_SEPARATORS",
+        "EXCLUDE_GNB_SEPARATORS",
+        "UPF_ONLY"
+      ]
+    },       
+    {
+      "documentName": "amf-context-diagram",
+      "documentType": "context-diagram",
+      "interfaceFilter": "AMF"
+    }   
+  ]
+}

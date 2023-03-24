@@ -1,0 +1,275 @@
+#include <colors.FDL>
+
+#ifdef USE_CALLOUT_REMARKS
+#define REMARK_TYPE "callout"
+#else
+#define REMARK_TYPE "column"
+#endif
+
+#ifdef USE_MULTI_TIER_HEADER
+#define SEQUENCE_DIAGRAM_HEADER "multi-tier-header"
+#else
+#define SEQUENCE_DIAGRAM_HEADER "single-tier-light-weight" 
+#endif
+
+#ifndef OVERRIDE_STYLE
+
+#define DEFAULT_PAPER_SIZE "letter"                /* "letter", "legal", "B", "C", "A4", or "A3" */
+#define DEFAULT_ORIENTATION "landscape-only"        /* "portrait-only" or "landscape-only" */
+
+#define PRESENTATION_PAPER_SIZE "legal"            /* "letter", "legal", "B", "C", "A4", or "A3" */
+#define PRESENTATION_ORIENTATION "landscape-only"  /* "portrait-only" or "landscape-only" */
+
+#define POSTER_PAPER_SIZE "B"                      /* "letter", "legal", "B", "C", "A4", or "A3" */
+#define POSTER_ORIENTATION "portrait-only"         /* "portrait-only" or "landscape-only" */
+
+#define MESSAGE_NAME_COLOR FIREBRICK
+#define MESSAGE_ARROW_COLOR ROYALBLUE
+#define MESSAGE_PARAMETER_COLOR SLATEBLUE
+
+#define TAG_BOUNDARY_COLOR PURPLE
+#define TAG_BACKGROUND_COLOR PURPLE
+#define TAG_TEXT_COLOR WHITE
+
+#define METHOD_NAME_COLOR DODGERBLUE
+#define METHOD_ARROW_COLOR LIMEGREEN
+#define METHOD_PARAMETER_COLOR FORESTGREEN
+
+#define ACTION_BOUNDARY_COLOR MAROON
+#define ACTION_BACKGROUND_COLOR MAROON
+#define ACTION_TEXT_COLOR WHITE
+
+#define STATE_BOUNDARY_COLOR TOMATO
+#define STATE_BACKGROUND_COLOR TOMATO
+#define STATE_TEXT_COLOR WHITE
+
+#define TIMER_NAME_COLOR OLIVEDRAB
+#define TIMER_ARROW_COLOR DARKKHAKI
+
+#define BLOCK_REMARK_BOUNDARY_COLOR DIMGREY
+#define BLOCK_REMARK_BACKGROUND_COLOR WHITESMOKE
+#define BLOCK_REMARK_TEXT_COLOR BLACK
+
+#define HEADING_BOUNDARY_COLOR KHAKI
+#define HEADING_BACKGROUND_COLOR KHAKI
+#define HEADING_TEXT_COLOR OLIVE
+
+#define REMARK_BOUNDARY_COLOR DODGERBLUE
+#define REMARK_TEXT_COLOR BLACK
+#define REMARK_BACKGROUND_COLOR ALICEBLUE
+
+#define CREATE_NAME_COLOR FIREBRICK
+#define CREATE_ARROW_COLOR RED
+#define CREATE_PARAMETER_COLOR ORANGERED
+
+#define DELETE_NAME_COLOR OLIVEDRAB
+#define DELETE_ARROW_COLOR DARKOLIVEGREEN
+#define DELETE_PARAMETER_COLOR FORESTGREEN
+
+#define ALLOCATE_BOUNDARY_COLOR CRIMSON
+#define ALLOCATE_BACKGROUND_COLOR CRIMSON
+#define ALLOCATE_TEXT_COLOR WHITE
+
+#define FREE_BOUNDARY_COLOR GREEN
+#define FREE_BACKGROUND_COLOR GREEN
+#define FREE_TEXT_COLOR WHITE
+
+#define ENTITY_AXIS_LINE_COLOR INDIGO
+#define ENTITY_AXIS_BACKGROUND_COLOR INDIGO
+#define ENTITY_AXIS_TEXT_COLOR WHITE
+
+#endif
+
+
+#define CONTINUOUS_ACTION_BOUNDARY_COLOR LIGHTGRAY
+#define CONTINUOUS_ACTION_BACKGROUND_COLOR LIGHTGRAY
+#define CONTINUOUS_ACTION_TEXT_COLOR BLACK
+
+/* Choose between POSTER, PRESENTATION and regular theme for a document. The preset attributes of
+the three document types are:
+Regular       : US letter paper in portrait orientation
+PRESENTATION  : US legal paper in landscape orientation
+POSTER        : US B paper in portrait orientation
+
+Regular theme is the default. You can convert a document to a POSTER or a PRESENTATION
+by adding a define in the document declaration. For example, the following "documents" section
+in the project.scn.json file defines all three types of documents. 
+
+  "documents": [
+    {
+      "documentName": "doc-regular"
+    },
+     {
+      "documentName": "doc-poster",
+      "defines": ["POSTER"]
+    },
+    {
+      "documentName": "doc-presentation",
+      "defines": ["PRESENTATION"]
+    },   
+  ]
+ */
+#ifdef POSTER
+theme MyTheme:      messageParameterFormatting = "single-parameter-per-line-left-align",
+                    sequenceDiagramHeader = SEQUENCE_DIAGRAM_HEADER,
+                    displayParentInLightWeightHeader = "true",
+                    blockRemarkFormatting = "left-align",
+                    assignSequenceNumbersInSequenceDiagrams = "true",
+                    remarkType = REMARK_TYPE,
+                    paperSize = POSTER_PAPER_SIZE,
+                    minimizeEMFImageWidth = "false",
+                    minimizeEMFImageLength = "true",
+                    sequenceDiagramLayout = POSTER_ORIENTATION,
+                    stateShape = "curved-rectangle",
+                    pageMarginPDF = "small",
+                    pageMarginEMF = "small",
+                    headingAndTitleFont = "Arial Narrow",
+                    headingAndTitleFontSize = "8",
+                    sequenceDiagramMessageNameFont = "Arial Narrow",
+                    sequenceDiagramMessageNameFontSize = "10",
+                    collaborationDiagramMessageNameFont = "Arial Narrow",
+                    collaborationDiagramMessageNameFontSize = "8",
+                    messageParameterFont = "Arial Narrow",
+                    messageParameterFontSize = "8",
+                    actionBoxFont = "Arial Narrow",
+                    actionBoxFontSize = "8",
+                    remarkFont = "Arial Narrow",
+                    remarkFontSize = "10",
+                    blockRemarkFont = "Arial Narrow",
+                    blockRemarkFontSize = "10"
+#elif PRESENTATION
+
+theme MyTheme:      messageParameterFormatting = "single-parameter-per-line-left-align",
+                    sequenceDiagramHeader = SEQUENCE_DIAGRAM_HEADER,
+                    displayParentInLightWeightHeader = "true",
+                    blockRemarkFormatting =  "left-align",
+                    assignSequenceNumbersInSequenceDiagrams = "true",
+                    remarkType = REMARK_TYPE,
+                    paperSize = PRESENTATION_PAPER_SIZE,
+                    minimizeEMFImageWidth = "false",
+                    minimizeEMFImageLength = "true",
+                    sequenceDiagramLayout = PRESENTATION_ORIENTATION,
+                    stateShape = "curved-rectangle",
+                    pageMarginPDF = "small",
+                    pageMarginEMF = "small",
+                    headingAndTitleFont = "Arial Narrow",
+                    headingAndTitleFontSize = "14",
+                    sequenceDiagramMessageNameFont = "Arial Narrow",
+                    sequenceDiagramMessageNameFontSize = "16",
+                    collaborationDiagramMessageNameFont = "Arial Narrow",
+                    collaborationDiagramMessageNameFontSize = "14",
+                    messageParameterFont = "Arial Narrow",
+                    messageParameterFontSize = "14",
+                    actionBoxFont = "Arial Narrow",
+                    actionBoxFontSize = "14",
+                    remarkFont = "Arial Narrow",
+                    remarkFontSize = "16",
+                    blockRemarkFont = "Arial Narrow",
+                    blockRemarkFontSize = "16"
+#else
+theme MyTheme:      messageParameterFormatting = "single-parameter-per-line-left-align",
+                    sequenceDiagramHeader = SEQUENCE_DIAGRAM_HEADER,
+                    displayParentInLightWeightHeader = "true",
+                    blockRemarkFormatting = "left-align",
+                    assignSequenceNumbersInSequenceDiagrams = "true",
+                    remarkType = REMARK_TYPE,
+                    paperSize = DEFAULT_PAPER_SIZE,
+                    minimizeEMFImageWidth = "false",
+                    minimizeEMFImageLength = "true",
+                    sequenceDiagramLayout = DEFAULT_ORIENTATION,
+                    stateShape = "curved-rectangle",
+                    pageMarginPDF = "small",
+                    pageMarginEMF = "small",
+                    headingAndTitleFont = "Arial Narrow",
+                    headingAndTitleFontSize = "8",
+                    sequenceDiagramMessageNameFont = "Arial Narrow",
+                    sequenceDiagramMessageNameFontSize = "10",
+                    collaborationDiagramMessageNameFont = "Arial Narrow",
+                    collaborationDiagramMessageNameFontSize = "8",
+                    messageParameterFont = "Arial Narrow",
+                    messageParameterFontSize = "8",
+                    actionBoxFont = "Arial Narrow",
+                    actionBoxFontSize = "8",
+                    remarkFont = "Arial Narrow",
+                    remarkFontSize = "10",
+                    blockRemarkFont = "Arial Narrow",
+                    blockRemarkFontSize = "10"
+#endif
+
+
+/* Sample styles that you may use in your statements. A few examples:
+
+Add a code fragment
+[_code] |= bool answersTheUltimateQuestion(int num)
+       { return num == 42;} =|
+
+Show an error visually
+[_error] Msg: a ->X b % the message is lost
+*/
+style _code: font="Courier New", fontsize="9",  color = GAINSBORO, bgcolor=GAINSBORO, textcolor = BLACK, blockRemarkFormatting="verbatim"
+style _error: color=RED
+style _good: color=GREEN
+style _PDCCJ: match="^PDCCH", textcolor=DIMGREY, color=DIMGREY, paramcolor=GREY
+style _RRC: match="^RRC", textcolor=FIREBRICK, color=ROYALBLUE, paramcolor=SLATEBLUE
+style _NAS: match="^NAS", textcolor=DODGERBLUE, color=LIMEGREEN, paramcolor=FORESTGREEN
+style _Nudm: match="^Nudm", textcolor=MEDIUMBLUE, color=GREY, paramcolor=DIMGREY
+style _GTP: match="^GTP", textcolor=OLIVEDRAB, color=DARKKHAKI, paramcolor=OLIVEDRAB
+style _NGAP: match="^NGAP", textcolor=PURPLE, color=DARKBLUE, paramcolor=DODGERBLUE
+style _Namf: match="^Namf", textcolor=DARKSLATEBLUE, color=DODGERBLUE, paramcolor=INDIGO
+style _Nausf: match="^Nausf", textcolor=MAROON, color=PURPLE, paramcolor=SADDLEBROWN
+style _Npcf: match="^Npcf", textcolor=OLIVE, color=OLIVEDRAB, paramcolor=DARKGREEN
+style _state: textcolor=WHITE, color=INDIGO, bgcolor=INDIGO
+
+style _title: color = GAINSBORO, bgcolor=GAINSBORO, textcolor=BLACK, fontsize="30"
+style _subtitle: color = GAINSBORO, bgcolor=GAINSBORO, textcolor=BLACK, fontsize="15"
+
+/* Use the following styles for action boxes only, as they set the text color to white. */
+style _success: color=GREEN, bgcolor=GREEN, textcolor=WHITE
+style _failure: color=RED, bgcolor=RED, textcolor=WHITE
+
+/* Sample heading styles you may use in your declarations. For example:
+
+subsystem: [_radio] Cell, [_client] Home, [_server] in DataCenter
+eternal: [_user] Subscriber in Cell, [_client] PC in Home, [_server] HttpServer in DataCenter
+*/
+
+style _user: color=ROSYBROWN, bgcolor=ROSYBROWN, textcolor=WHITE
+style _radio: color=CRIMSON, bgcolor=CRIMSON, textcolor=WHITE
+style _client: color=SADDLEBROWN, bgcolor=SADDLEBROWN, textcolor=WHITE
+style _server: color=DARKGREEN, bgcolor=DARKGREEN, textcolor=WHITE
+style _frontend: color=MIDNIGHTBLUE, bgcolor=MIDNIGHTBLUE, textcolor=WHITE
+style _backend: color=ORCHID, bgcolor=ORCHID, textcolor=WHITE
+style _core: textcolor=WHITE, color=MAROON, bgcolor=MAROON
+style _router: textcolor=WHITE, color=OLIVE, bgcolor=OLIVE
+style _hyperlink: textcolor=BLUE, color=NAVY, bgcolor=ALICEBLUE, paramcolor=DODGERBLUE
+
+/* Default styles applied when a style is not specified for a statement. */
+
+style default_invokes_style: color=METHOD_ARROW_COLOR, textcolor=METHOD_NAME_COLOR, paramcolor=METHOD_PARAMETER_COLOR
+style default_returns_style: color=METHOD_ARROW_COLOR, textcolor=METHOD_NAME_COLOR, paramcolor=METHOD_PARAMETER_COLOR, linepattern="- -"
+style default_message_style: color=MESSAGE_ARROW_COLOR, textcolor=MESSAGE_NAME_COLOR, paramcolor=MESSAGE_PARAMETER_COLOR
+style default_cascaded_message_style: color=MESSAGE_ARROW_COLOR, textcolor=MESSAGE_NAME_COLOR, paramcolor=MESSAGE_PARAMETER_COLOR
+style default_multicast_style: color=MESSAGE_ARROW_COLOR, textcolor=MESSAGE_NAME_COLOR, paramcolor=MESSAGE_PARAMETER_COLOR
+style default_create_style: color=CREATE_ARROW_COLOR,  textcolor=CREATE_NAME_COLOR, paramcolor=CREATE_PARAMETER_COLOR, linepattern="- -"
+style default_delete_style: color=DELETE_ARROW_COLOR, textcolor=DELETE_NAME_COLOR, paramcolor=DELETE_PARAMETER_COLOR,  linepattern="- -"
+style default_remark_style: color=REMARK_TEXT_COLOR
+style default_callout_remark_style: color=REMARK_BOUNDARY_COLOR, bgcolor=REMARK_BACKGROUND_COLOR, textcolor=REMARK_TEXT_COLOR
+style default_timer_style: color=TIMER_ARROW_COLOR,  textcolor=TIMER_NAME_COLOR
+
+
+style default_block_remark_style: color=BLOCK_REMARK_BOUNDARY_COLOR, bgcolor=BLOCK_REMARK_BACKGROUND_COLOR, textcolor=BLOCK_REMARK_TEXT_COLOR
+style default_state_style: color=STATE_BOUNDARY_COLOR, bgcolor=STATE_BACKGROUND_COLOR, textcolor=STATE_TEXT_COLOR
+style default_action_style: color=ACTION_BOUNDARY_COLOR, bgcolor=ACTION_BACKGROUND_COLOR, textcolor=ACTION_TEXT_COLOR
+style default_continuous_action_style: color=CONTINUOUS_ACTION_BOUNDARY_COLOR, bgcolor=CONTINUOUS_ACTION_BACKGROUND_COLOR, textcolor=CONTINUOUS_ACTION_TEXT_COLOR, fontsize="8"
+style default_allocate_style: color=ALLOCATE_BOUNDARY_COLOR, bgcolor=ALLOCATE_BACKGROUND_COLOR, textcolor=ALLOCATE_TEXT_COLOR
+style default_free_style: color=FREE_BOUNDARY_COLOR, bgcolor=FREE_BACKGROUND_COLOR, textcolor=FREE_TEXT_COLOR
+style default_heading_style: color=HEADING_BOUNDARY_COLOR, bgcolor=HEADING_BACKGROUND_COLOR, textcolor=HEADING_TEXT_COLOR, font="Arial Narrow", fontsize="18"
+
+style default_system_style: color=ENTITY_AXIS_LINE_COLOR, bgcolor=ENTITY_AXIS_BACKGROUND_COLOR, textcolor=ENTITY_AXIS_TEXT_COLOR
+style default_subsystem_style: color=ENTITY_AXIS_LINE_COLOR, bgcolor=ENTITY_AXIS_BACKGROUND_COLOR, textcolor=ENTITY_AXIS_TEXT_COLOR
+style default_module_style: color=ENTITY_AXIS_LINE_COLOR, bgcolor=ENTITY_AXIS_BACKGROUND_COLOR, textcolor=ENTITY_AXIS_TEXT_COLOR
+style default_component_style: color=ENTITY_AXIS_LINE_COLOR, bgcolor=ENTITY_AXIS_BACKGROUND_COLOR, textcolor=ENTITY_AXIS_TEXT_COLOR
+style default_eternal_style: color=ENTITY_AXIS_LINE_COLOR, bgcolor=ENTITY_AXIS_BACKGROUND_COLOR, textcolor=ENTITY_AXIS_TEXT_COLOR, linewidth="0.75"
+style default_dynamic_style: color=ENTITY_AXIS_LINE_COLOR, bgcolor=ENTITY_AXIS_BACKGROUND_COLOR, textcolor=ENTITY_AXIS_TEXT_COLOR, linewidth="0.75"
+
+style default_tag_style: textcolor=TAG_TEXT_COLOR, color=TAG_BOUNDARY_COLOR, bgcolor=TAG_BACKGROUND_COLOR, fontsize="7"
