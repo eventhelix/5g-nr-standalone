@@ -18,6 +18,10 @@ When you click on a message in the sequence diagram, you see details about the m
 
 The message details are generated from the [5G Standalone Registration Markdown file](message-details/5g-standalone-access-registration.md).
 
+## Help improve this sequence diagram
+
+If you find any errors or omissions in this sequence diagram, please [create an issue](issues/new) or [submit a pull request](pulls).
+
 
 
 
