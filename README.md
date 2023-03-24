@@ -20,7 +20,7 @@ The message details are generated from the [5G Standalone Registration Markdown 
 
 ## Help improve this sequence diagram
 
-If you find any errors or omissions in this sequence diagram, please [create an issue](issues/new) or [submit a pull request](pulls).
+If you find any errors or omissions in this sequence diagram, please [create an issue](https://github.com/eventhelix/5g-nr-standalone/issues).
 
 
 
