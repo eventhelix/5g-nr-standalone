@@ -52,6 +52,12 @@ When you click on a message in the sequence diagram, you see details about the m
 
 The message details are generated from the [5G Standalone Registration Markdown file](message-details/5g-standalone-access-registration.md).
 
+The message detail file path should be specified by the `HYPERLINK` define in the [5g-standalone-access-registration.FDL](model/5g-standalone-access-registration.FDL) file.
+
+```
+#define HYPERLINK https://www.eventhelix.com/5G/standalone-access-registration/details/5g-standalone-access-registration.html
+```
+
 
 ## Help improve this sequence diagram
 
