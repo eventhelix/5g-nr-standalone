@@ -27,23 +27,6 @@
                                    For example, "POSTER" and "PRESENTATION" formats can be selected
                                    by adding them to the defines.*/
   "documents": [
-/*     {
-      "documentName": "en-dc-secondary-node-addition-overview",
-      "interactionLevel": "component",
-      "exclude": [
-        "remarks", "parameters", "actions", "blockRemarks"
-      ],
-      "defines": [
-        "EXCLUDE_4G_ATTACH",
-        "EXCLUDE_CORE_NETWORK_INTERNALS"
-      ]
-    },
-    {
-      "documentName": "en-dc-secondary-node-addition",
-      "defines": [
-        "EXCLUDE_CORE_NETWORK_INTERNALS"
-      ]
-    }, */
     {
       "documentName": "5g-standalone-access-registration",
       "defines": [
