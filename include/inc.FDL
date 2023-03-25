@@ -1,3 +1,6 @@
+/* This file is licensed as per the CC-BY-4.0 license as specified in: 
+https://github.com/eventhelix/5g-nr-standalone/blob/main/LICENSE.md */
+
 #include <colors.FDL>
 
 #ifdef USE_CALLOUT_REMARKS

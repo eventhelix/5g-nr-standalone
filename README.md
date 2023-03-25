@@ -46,13 +46,12 @@ The following documents are generated in PDF format:
 
 In addition to the above documents a `documents.html` file is generated that contains links to all the generated documents.
 
-
-
 ## Message Details in Markdown
 
 When you click on a message in the sequence diagram, you see details about the message.
 
 The message details are generated from the [5G Standalone Registration Markdown file](message-details/5g-standalone-access-registration.md).
+
 
 ## Help improve this sequence diagram
 

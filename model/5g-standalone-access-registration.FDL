@@ -1,6 +1,6 @@
-/* Optional style and theme specification files to style the output. Choose from predefined files:
-aqua.FDL, business.FDL, chocolate.FDL, pastel.FDL, rainbow.FDL or sunrise.FDL.*/
-//#include <aqua.FDL>
+/* This file is licensed as per the CC-BY-4.0 license as specified in: 
+https://github.com/eventhelix/5g-nr-standalone/blob/main/LICENSE.md */
+
 #define HYPERLINK https://www.eventhelix.com/5G/standalone-access-registration/details/5g-standalone-access-registration.html
 /* Project include file - Use include files to share common aspects of the model across multiple FDL files. */ 
 #include <inc.FDL>
